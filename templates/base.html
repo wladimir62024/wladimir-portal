@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WU-ARMS</title>
+<style>
+:root{--side:#00313f;--side2:#02242e;--or:#f4623a;--bg:#f4f6f9;--top:#2f4050}
+*{box-sizing:border-box}body{margin:0;font-family:"Open Sans",Arial,sans-serif;background:var(--bg);color:#444;font-size:14px}
+a{color:var(--or);text-decoration:none}
+#side{position:fixed;left:0;top:0;bottom:0;width:233px;background:var(--side);color:#9fb3ba;overflow-y:auto;transition:.2s;z-index:5}
+#side.hide{left:-233px}.brand{background:#0b4252;color:#fff;font-size:19px;font-weight:bold;padding:18px 20px;height:63px}.brand small{font-weight:normal;font-size:12px;color:#9fb3ba}
+.sec{padding:22px 20px 8px;font-size:12px;letter-spacing:1px;color:#8aa0a8}
+#side a.it,.grp{display:flex;align-items:center;gap:12px;padding:11px 20px;color:#a5b8be;cursor:pointer;font-size:14px}
+#side a.it:hover,.grp:hover,#side a.on{color:#fff}.grp .car{margin-left:auto;font-size:11px;transition:.2s}.grp.open .car{transform:rotate(90deg)}
+.grp.open{color:#fff}.sub{display:none;background:var(--side2)}.sub.open{display:block}.sub a{display:block;padding:10px 20px 10px 54px;color:#a5b8be;font-size:14px}.sub a.on,.sub a:hover{color:#fff}.sub a.on{background:#021c24;border-left:3px solid var(--or);padding-left:51px}
+#main{margin-left:233px;transition:.2s}#main.full{margin-left:0}
+#top{background:#fff;height:63px;display:flex;align-items:center;padding:0 20px;gap:10px;border-bottom:1px solid #e7eaec}
+.tb{border:1px solid #ddd;background:#fff;border-radius:3px;padding:7px 12px;cursor:pointer;color:#333}.wel{font-weight:bold;color:#222}.wel span{color:var(--or)}
+.sp{flex:1}.ub{display:flex;align-items:center;gap:8px;border:1px solid #ddd;border-radius:3px;padding:6px 10px;background:#fff;cursor:pointer;font-weight:bold;color:#333}
+.av{width:20px;height:20px;border-radius:3px;background:#2a7fd4;object-fit:cover;display:inline-block}
+.bell{position:relative}.bell b{position:absolute;top:-6px;right:-8px;background:#ff6b5b;color:#fff;border-radius:10px;font-size:11px;padding:1px 6px}
+.dd{position:relative}.menu{display:none;position:absolute;right:0;top:46px;width:180px;background:#fff;box-shadow:0 2px 10px #0003;z-index:20}.menu.open{display:block}
+.menu .hd{background:#2f4050;padding:16px;text-align:center}.menu .hd img,.menu .hd i{width:56px;height:56px;border-radius:50%;border:3px solid #9aa7b3;object-fit:cover;display:inline-block;background:#2a7fd4}
+.menu a{display:block;padding:11px 20px;color:#444}.menu a:hover{background:#f3f5f8}.menu hr{margin:0;border:0;border-top:1px solid #eee}
+.pt{padding:25px 30px 15px;font-size:19px;font-weight:600;color:#333;display:flex;justify-content:space-between}.pt small{font-size:13px;font-weight:normal;color:#888}
+.card{background:#fff;margin:0 30px 25px;border:1px solid #e7eaec}.ch{padding:20px;display:flex;justify-content:space-between;align-items:center;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid #eee}.ch span{font-weight:normal;text-transform:none}
+.cb{padding:20px}.bo{border:1px solid var(--or);color:var(--or);background:#fff;padding:6px 12px;border-radius:3px;cursor:pointer;font-size:13px;display:inline-block}.bo:hover{background:var(--or);color:#fff}
+.bs{background:var(--or);color:#fff;border:0;padding:8px 16px;border-radius:3px;cursor:pointer}
+table.dt{width:100%;border-collapse:collapse}table.dt th{background:#f6f6f6;text-transform:uppercase;font-size:13px;color:#555;border:1px solid #ddd;padding:12px;text-align:left}
+table.dt td{border:1px solid #ddd;padding:12px;vertical-align:middle}table.dt tbody tr:nth-child(odd){background:#fcfcfc}
+.ctl{display:flex;justify-content:space-between;margin-bottom:12px;align-items:center}.ctl input,.ctl select,.f input,.f select{border:1px solid #ccc;padding:6px 8px;border-radius:3px}
+.pg{display:flex;justify-content:space-between;margin-top:12px;align-items:center}.pg button{border:0;background:none;color:#aaa;padding:8px 12px;cursor:pointer;font-size:15px}.pg button.cur{color:var(--or);border-bottom:2px solid var(--or)}.pg button.nx{color:#999}
+.ok{display:inline-block;width:20px;height:20px;border-radius:50%;background:#2db36b;color:#fff;text-align:center;font-size:13px;line-height:20px}.no{background:#d33}
+.act{position:relative;display:inline-block}.am{display:none;position:absolute;right:0;top:34px;background:#fff;min-width:190px;box-shadow:0 2px 10px #0003;z-index:10;text-align:left}.am.open{display:block}.am a,.am button{display:block;width:100%;text-align:left;padding:10px 16px;background:none;border:0;color:#444;cursor:pointer;font-size:14px}.am a:hover,.am button:hover{background:#f3f5f8}
+.fl{background:#fff3cd;margin:0 30px 15px;padding:10px 15px;border-left:4px solid var(--or)}
+dialog{border:0;border-radius:4px;padding:0;min-width:340px;box-shadow:0 5px 25px #0005}dialog h3{margin:0;padding:15px 20px;background:var(--side);color:#fff;font-size:16px}dialog .b{padding:20px}dialog input{width:100%;margin:4px 0 10px;padding:8px;border:1px solid #ccc;border-radius:3px}
+.cards{display:flex;gap:15px;flex-wrap:wrap;padding:0 30px}.cd{background:#fff;padding:20px;min-width:190px;border:1px solid #e7eaec}.cd b{font-size:28px;color:var(--or)}
+.f{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}
+.foot{display:flex;justify-content:space-between;padding:20px 30px;background:#fff;border-top:1px solid #e7eaec;margin-top:30px;color:#555}
+</style></head><body>
+{% if me and not locked %}
+{% set cur = request.view_args.get('name') if request.view_args else None %}
+<div id="side"><div class="brand">&#127891; WU-ARMS <small>2.0.0</small></div>
+<a class="it {{'on' if request.endpoint=='dashboard'}}" href="{{url_for('dashboard')}}" style="margin-top:12px">&#9201; Dashboard</a>
+{% if me.role!='supervisor' %}{% for sec,entries in menu.items() %}<div class="sec">{{sec}}</div>
+{% for label,icon,items,direct in entries %}
+{% if direct %}<a class="it {{'on' if cur==items[0][0] or (items[0][0]=='guide' and request.endpoint=='guide')}}" href="{{url_for('guide') if items[0][0]=='guide' else url_for('table',name=items[0][0])}}">{{icon|safe}} {{label}}</a>
+{% else %}{% set op = items|selectattr('0','equalto',cur)|list|length>0 or (label=='Field & Project' and cur=='logbook') %}
+<div class="grp {{'open' if op}}" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">{{icon|safe}} {{label}} <span class="car">&#9656;</span></div>
+<div class="sub {{'open' if op}}">{% for k,l in items %}<a class="{{'on' if cur==k or (k=='placements' and cur=='logbook')}}" href="{{url_for('table',name=k)}}">{{l}}</a>{% endfor %}</div>{% endif %}{% endfor %}{% endfor %}{% endif %}
+{% if me.role!='student' %}<div class="sec">{{'LOGBOOK' if me.role=='supervisor' else 'ADMINISTRATION'}}</div><a class="it" href="{{url_for('sup_page')}}">&#9989; Logbook Approvals</a>{% if me.role!='supervisor' %}<a class="it" href="{{url_for('users')}}">&#128101; {{'Staff & Students' if me.role=='super' else 'Students'}}</a>{% endif %}{% endif %}
+</div>
+<div id="main"><div id="top"><button class="tb" onclick="document.getElementById('side').classList.toggle('hide');document.getElementById('main').classList.toggle('full')">&#8942;</button>
+<span class="wel">Welcome, {{me.full_name|upper}}{% if me.programme %}~<span>{{me.programme}}</span>{% endif %}</span><span class="sp"></span>
+<div class="dd"><div class="ub" onclick="tg(this.nextElementSibling)">{% if me.photo %}<img class="av" src="{{url_for('photo',fn=me.photo)}}">{% else %}<i class="av"></i>{% endif %} {{me.reg_no or me.username}} &#9662;</div>
+<div class="menu"><div class="hd">{% if me.photo %}<img src="{{url_for('photo',fn=me.photo)}}">{% else %}<i></i>{% endif %}</div>
+<a href="{{url_for('profile')}}">Profile</a><a href="{{url_for('settings')}}">Settings</a><hr><a href="{{url_for('lock')}}">Lock Account</a><a href="{{url_for('logout')}}">Log Out</a></div></div>
+<div class="tb bell">&#128276;<b>0</b></div></div>
+{% else %}<div id="main" class="full">{% endif %}
+{% for m in get_flashed_messages() %}<div class="fl" style="margin-top:15px">{{m}}</div>{% endfor %}
+{% block c %}{% endblock %}
+<div class="foot"><span><a href="#">Wladimir University</a> &copy; 2026</span><span>Designed &amp; Developed for Wladimir University</span></div></div>
+<script>
+function tg(e){document.querySelectorAll('.menu.open,.am.open').forEach(x=>{if(x!==e)x.classList.remove('open')});e.classList.toggle('open')}
+document.addEventListener('click',e=>{if(!e.target.closest('.dd,.act'))document.querySelectorAll('.menu.open,.am.open').forEach(x=>x.classList.remove('open'))});
+document.querySelectorAll('table.dt').forEach(t=>{
+ const rows=[...t.tBodies[0].rows].filter(r=>!r.classList.contains('empty')),noun=t.dataset.noun||'records',w=t.parentElement;let page=1;
+ const sel=w.querySelector('.per'),q=w.querySelector('.srch'),info=w.querySelector('.info'),nav=w.querySelector('.nav');
+ function draw(){const k=(q.value||'').toLowerCase(),per=+sel.value,m=rows.filter(r=>r.innerText.toLowerCase().includes(k)),pages=Math.max(1,Math.ceil(m.length/per));
+  if(page>pages)page=pages;rows.forEach(r=>r.style.display='none');m.slice((page-1)*per,page*per).forEach(r=>r.style.display='');
+  [...rows].forEach((r,i)=>{});let n=0;m.slice((page-1)*per,page*per).forEach(r=>{const c=r.querySelector('.sn');if(c)c.textContent=(page-1)*per+(++n)});
+  const a=m.length?(page-1)*per+1:0,b=Math.min(page*per,m.length);info.textContent=`Showing ${a} to ${b} of ${m.length} ${noun}`;
+  nav.innerHTML='<button class="pv">Previous</button>'+Array.from({length:pages},(_,i)=>`<button class="${i+1==page?'cur':''}" data-p="${i+1}">${i+1}</button>`).join('')+'<button class="nx">Next</button>';
+  nav.querySelector('.pv').onclick=()=>{if(page>1){page--;draw()}};nav.querySelector('.nx').onclick=()=>{if(page<pages){page++;draw()}};
+  nav.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{page=+b.dataset.p;draw()})}
+ sel.onchange=()=>{page=1;draw()};q.oninput=()=>{page=1;draw()};draw()});
+</script></body></html>

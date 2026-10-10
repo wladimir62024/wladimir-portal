@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block c %}<div class="pt">Manage Users<small>Administration</small></div>
+<div class="card"><div class="cb"><form class="f" method="post"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+<select name="role">{% if me.role=='super' %}<option value="admin">Staff Admin (faculty programme)</option>{% endif %}<option value="student">Student</option><option value="supervisor">Local Supervisor</option></select>
+<input name="full_name" placeholder="Full name" required><input name="username" placeholder="Username" required><input name="password" placeholder="Password (min 6)" required>
+<input name="reg_no" placeholder="Reg No (students)"><input name="programme" placeholder="Programme (students)"><input name="email" placeholder="Email (supervisors - must match placement)"><button class="bs">Create</button></form>
+<table class="dt"><thead><tr><th>Role</th><th>Name</th><th>Username</th><th>Reg No</th><th>Programme</th><th>Email</th><th></th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{r.role}}</td><td>{{r.full_name}}</td><td>{{r.username}}</td><td>{{r.reg_no or ''}}</td><td>{{r.programme or ''}}</td><td>{{r.email or ''}}</td>
+<td>{% if r.role!='admin' or me.role=='super' %}<form method="post" action="{{url_for('user_delete',uid=r.id)}}" onsubmit="return confirm('Delete user?')"><input type="hidden" name="csrf" value="{{csrf_token()}}"><button class="bo">Delete</button></form>{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

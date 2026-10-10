@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% from '_dt.html' import ctl, pager %}{% block c %}
+<div class="pt">Field Placements<small>Field &amp; Project / My Placements</small></div>
+<div class="card"><div class="ch"><div>Field Placements <span>list</span></div><button class="bo" onclick="document.getElementById('addp').showModal()">+ Add Placement</button></div>
+<div class="cb">{{ctl('placements')}}
+<table class="dt" data-noun="placements"><thead><tr><th>SN</th>{% if me.role!='student' %}<th>Reg No</th>{% endif %}<th>Organization</th><th>District</th><th>Year of Study</th><th>Supervisor (*click for more)</th><th style="text-align:center">Arrived?</th><th style="text-align:center">Actions</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="sn">{{loop.index}}</td>{% if me.role!='student' %}<td>{{r['student']}}</td>{% endif %}<td>{{r['organization']|upper}}</td><td>{{r['district']}}</td><td>{{r['year_of_study']}}</td>
+<td><a href="#" onclick="document.getElementById('s{{r['id']}}').showModal();return false">{{r['supervisor_name'] or 'Add supervisor'}}</a></td>
+<td style="text-align:center">{% if r['arrived']=='Yes' %}<span class="ok">&#10003;</span>{% else %}<span class="ok no">&times;</span>{% endif %}</td>
+<td style="text-align:center"><div class="act"><button class="bo" onclick="tg(this.nextElementSibling)">&#9776; Actions &#9662;</button><div class="am">
+<a href="#" onclick="document.getElementById('s{{r['id']}}').showModal();return false">Supervisor Details</a>
+<a href="{{url_for('table',name='logbook')}}">Logbook</a>
+<form method="post" action="{{url_for('arrive',rid=r['id'])}}"><input type="hidden" name="csrf" value="{{csrf_token()}}"><button>{{'Unmark Arrival' if r['arrived']=='Yes' else 'Mark as Arrived'}}</button></form>
+<form method="post" action="{{url_for('delete',name='placements',rid=r['id'])}}" onsubmit="return confirm('Delete placement?')"><input type="hidden" name="csrf" value="{{csrf_token()}}"><button>Delete</button></form></div></div>
+<dialog id="s{{r['id']}}"><h3>Supervisor Details</h3><form class="b" method="post" action="{{url_for('sup_update',rid=r['id'])}}"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+Name<input name="supervisor_name" value="{{r['supervisor_name'] or ''}}">Phone<input name="supervisor_phone" value="{{r['supervisor_phone'] or ''}}">Email<input name="supervisor_email" value="{{r['supervisor_email'] or ''}}">
+<button class="bs">Save</button> <button type="button" class="bo" onclick="this.closest('dialog').close()">Close</button></form></dialog></td></tr>
+{% else %}<tr class="empty"><td colspan="9">No placements yet. Click "+ Add Placement".</td></tr>{% endfor %}</tbody></table>{{pager()}}</div></div>
+<dialog id="addp"><h3>Add Placement</h3><form class="b" method="post" action="{{url_for('add',name='placements')}}"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+{% if me.role!='student' %}Student Reg No<input name="student" required>{% endif %}
+Organization<input name="organization" required>District<input name="district" required>Year of Study<input name="year_of_study" type="number" min="1" max="6">
+Supervisor Name<input name="supervisor_name">Supervisor Phone<input name="supervisor_phone">Supervisor Email<input name="supervisor_email">
+<button class="bs">Save</button> <button type="button" class="bo" onclick="this.closest('dialog').close()">Close</button></form></dialog>{% endblock %}

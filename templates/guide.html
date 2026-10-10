@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block c %}<h2>Student Guide</h2><div class="card"><div class="cb">
+{% if exists %}<a class="btn" href="{{url_for('guide_download')}}">Download Student Guide (PDF)</a>{% else %}<p>No guide uploaded yet.</p>{% endif %}</div>
+{% if me.role=='super' %}<div class="card"><div class="cb"><form method="post" action="{{url_for('guide_upload')}}" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+<input type="file" name="pdf" accept="application/pdf" required><button>Upload / Replace PDF</button></form></div>{% endif %}{% endblock %}

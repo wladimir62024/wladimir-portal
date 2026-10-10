@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% from '_dt.html' import ctl, pager %}{% block c %}
+<div class="pt">Logbook Approvals<small>Local supervisor</small></div>
+<div class="card"><div class="ch"><div>Student logbook entries <span>list</span></div></div><div class="cb">
+{{ctl('entries')}}<table class="dt" data-noun="entries"><thead><tr><th>SN</th><th>Student</th><th>Organization</th><th>Date</th><th>Week</th><th>Activity</th><th>Status</th><th>Review</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="sn">{{loop.index}}</td><td>{{r['student']}}<br><small>{{r['full_name']}}</small></td><td>{{r['organization'] or ''}}</td><td>{{r['log_date']}}</td><td>{{r['week']}}</td>
+<td><button class="bo" onclick="document.getElementById('v{{r['id']}}').showModal()">View</button><dialog id="v{{r['id']}}" style="min-width:min(700px,90vw)"><h3>{{r['full_name']}} - {{r['log_date']}}</h3><div class="b">{{r['activity']|safe}}<br><button class="bo" onclick="this.closest('dialog').close()">Close</button></div></dialog></td>
+<td>{{r['status']}}</td>
+<td><form method="post" action="{{url_for('sup_review',rid=r['id'])}}"><input type="hidden" name="csrf" value="{{csrf_token()}}"><input name="comment" placeholder="Comment" value="{{r['supervisor_comment'] or ''}}" style="padding:5px">
+<button class="bs" name="action" value="Approved">Approve</button> <button class="bo" name="action" value="Rejected">Reject</button></form></td></tr>
+{% else %}<tr class="empty"><td colspan="9">No logbook entries for your students yet.</td></tr>{% endfor %}</tbody></table>{{pager()}}</div></div>{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}{% block c %}
+<div class="pt">{{'Edit' if row else 'New'}} Logbook Entry<small>Date: {{today}}</small></div>
+<div class="card"><div class="cb">
+<style>.tbar{display:flex;flex-wrap:wrap;gap:4px;border:1px solid #ccc;border-bottom:0;background:#f3f3f3;padding:6px}.tbar button,.tbar select{border:1px solid #ccc;background:#fff;padding:5px 9px;cursor:pointer;border-radius:3px}
+#ed{border:1px solid #ccc;min-height:380px;padding:30px 40px;background:#fff;outline:0;line-height:1.6;font-size:15px;box-shadow:inset 0 0 6px #0001}#ed table{border-collapse:collapse}#ed td,#ed th{border:1px solid #999;padding:6px;min-width:60px}</style>
+<form method="post" onsubmit="document.getElementById('act').value=document.getElementById('ed').innerHTML"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+<p>Week / Period: <input name="week" value="{{row['week'] if row else ''}}" required style="padding:6px"></p>
+<div class="tbar" onmousedown="if(event.target.tagName!='SELECT'&&event.target.tagName!='INPUT')event.preventDefault()">
+<select onchange="fmt('formatBlock',this.value);this.selectedIndex=0"><option>Style</option><option value="p">Normal</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Quote</option></select>
+<select onchange="fmt('fontSize',this.value);this.selectedIndex=0"><option>Size</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">X-Large</option><option value="6">Huge</option></select>
+<button type="button" onclick="fmt('bold')"><b>B</b></button><button type="button" onclick="fmt('italic')"><i>I</i></button><button type="button" onclick="fmt('underline')"><u>U</u></button><button type="button" onclick="fmt('strikeThrough')"><s>S</s></button>
+<button type="button" onclick="fmt('subscript')">x&#8322;</button><button type="button" onclick="fmt('superscript')">x&sup2;</button>
+<label title="Text colour">A <input type="color" value="#000000" onchange="fmt('foreColor',this.value)" style="width:26px;height:22px;padding:0;border:0"></label>
+<label title="Highlight">&#9998; <input type="color" value="#ffff00" onchange="fmt('hiliteColor',this.value)" style="width:26px;height:22px;padding:0;border:0"></label>
+<button type="button" onclick="fmt('insertUnorderedList')">&#8226; List</button><button type="button" onclick="fmt('insertOrderedList')">1. List</button><button type="button" onclick="fmt('outdent')">&larr;</button><button type="button" onclick="fmt('indent')">&rarr;</button>
+<button type="button" onclick="fmt('justifyLeft')">&#8676;</button><button type="button" onclick="fmt('justifyCenter')">&#8801;</button><button type="button" onclick="fmt('justifyRight')">&#8677;</button><button type="button" onclick="fmt('justifyFull')">&#9776;</button>
+<button type="button" onclick="tbl()">Table</button><button type="button" onclick="fmt('undo')">&#8630;</button><button type="button" onclick="fmt('redo')">&#8631;</button><button type="button" onclick="fmt('removeFormat')">Clear</button></div>
+<div id="ed" contenteditable="true">{{(row['activity'] if row else '')|safe}}</div><input type="hidden" name="activity" id="act">
+<p><small id="wc"></small></p>
+<p><small>{% if row %}You can edit until 23:59 today or until approval.{% else %}After saving, the entry waits for local supervisor approval and can be edited only until 23:59 today.{% endif %}</small></p>
+<button class="bs">Save for Approval</button> <a class="bo" href="{{url_for('table',name='logbook')}}">Cancel</a></form>
+<script>const ed=document.getElementById('ed');document.execCommand('styleWithCSS',false,true);
+function fmt(c,v){ed.focus();document.execCommand(c,false,v||null)}
+function tbl(){let h='<table>';for(let r=0;r<3;r++){h+='<tr>';for(let c=0;c<3;c++)h+='<td>&nbsp;</td>';h+='</tr>'}fmt('insertHTML',h+'</table><p><br></p>')}
+function wc(){const t=ed.innerText.trim();document.getElementById('wc').textContent=(t?t.split(/\s+/).length:0)+' words'}ed.oninput=wc;wc();</script>
+</div></div>{% endblock %}

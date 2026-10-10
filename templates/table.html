@@ -1,0 +1,33 @@
+{% extends 'base.html' %}{% from '_dt.html' import ctl, pager %}{% block c %}
+{% set stu = me.role=='student' %}{% set hs = stu and name=='hostels' %}{% set rev = (not stu) and name in ['postponed_study','programme_transfer'] %}
+<div class="pt">{{title}}<small>{{title}}</small></div>
+<div class="card"><div class="ch"><div>{{title}} <span>list</span></div></div><div class="cb">
+{% macro F(kind) %}<form class="f" method="post" action="{{url_for('submit',kind=kind)}}"><input type="hidden" name="csrf" value="{{csrf_token()}}">{{caller()}}</form>{% endmacro %}
+{% macro SEL(l,txt) %}<select name="course_code" required><option value="">{{txt}}</option>{% for c in l %}<option value="{{c.course_code}}">{{c.course_code}} - {{c.course_title}}</option>{% endfor %}</select>{% endmacro %}
+{% if stu %}
+{% if name=='course_registration' %}{% call F('course') %}{{SEL(opts.list,'Select course to register')}}<button class="bs">Register Course</button>{% endcall %}
+{% elif name=='exam_registration' %}<p>Tuition paid: <b>{{'{:,.0f}'.format(opts.paid)}}</b> / minimum <b>{{'{:,.0f}'.format(opts.min)}}</b> {% if opts.paid<opts.min %}<span style="color:#d33">- pay the minimum fee to register for exams</span>{% else %}<span style="color:#2db36b">- eligible</span>{% endif %}</p>
+{% call F('exam') %}{{SEL(opts.list,'Select course for exam')}}<button class="bs">Register for Exam</button>{% endcall %}
+{% elif name=='supp_registration' %}<p><small>You can register only for courses below the pass mark (40).</small></p>{% call F('supp') %}<select name="course_code" required><option value="">Select failed course</option>{% for c in opts.list %}<option value="{{c.course_code}}">{{c.course_code}} - {{c.course_title}} ({{c.marks}})</option>{% endfor %}</select><button class="bs">Register Supplementary</button>{% endcall %}
+{% elif name=='course_evaluation' %}{% call F('eval') %}{{SEL(opts.list,'Select course to evaluate')}}<input name="lecturer" placeholder="Lecturer name"><select name="rating" required><option value="">Rating</option><option value="5">5 - Excellent</option><option value="4">4 - Good</option><option value="3">3 - Average</option><option value="2">2 - Poor</option><option value="1">1 - Very poor</option></select><input name="comment" placeholder="Comment" size="30"><button class="bs">Submit Evaluation</button>{% endcall %}
+{% elif name=='postponed_study' %}{% call F('postpone') %}<input name="reason" placeholder="Reason" required size="30"><input type="date" name="from_date" required><input type="date" name="to_date" required><button class="bs">Request Postponement</button>{% endcall %}
+{% elif name=='programme_transfer' %}{% call F('transfer') %}<input name="to_programme" placeholder="Transfer to programme" required><input name="reason" placeholder="Reason" size="30"><button class="bs">Request Transfer</button>{% endcall %}
+{% elif name=='nhif' %}{% if opts.done %}<p>Your {{opts.done['created'][:4]}} NHIF control number: <b style="font-size:18px">{{opts.done['control_number']}}</b> &middot; Amount TZS {{opts.done['amount']}} ({{opts.done['status']}}). Only one per year is allowed.</p>
+{% else %}<form class="f" method="post" action="{{url_for('nhif_generate')}}"><input type="hidden" name="csrf" value="{{csrf_token()}}"><button class="bs">Generate Control Number (TZS {{'{:,.0f}'.format(opts.fee)}})</button></form>{% endif %}{% endif %}
+{% elif edit %}<form class="f" method="post" action="{{url_for('add',name=name)}}"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+{% if ps %}<input name="student" placeholder="Student Reg No" required>{% endif %}
+{% for c in cols %}<input name="{{c}}" placeholder="{{c.replace('_',' ').title()}}" {% if c in NUM %}type="number" step="any" {% if c=='marks' %}min="0" max="100"{% endif %}{% elif 'date' in c %}type="date"{% endif %}>{% endfor %}
+<button class="bs">+ Add</button></form>
+{% if name=='payment_status' %}<p><small>Tuition payments: use description "Tuition Fee" and status "Paid" - these count toward the exam registration minimum.</small></p>{% endif %}{% endif %}
+{{ctl('records')}}
+<table class="dt" data-noun="records"><thead><tr><th>SN</th>{% if ps and not stu %}<th>Reg No</th>{% endif %}{% for c in cols %}<th>{{c.replace('_',' ')}}</th>{% endfor %}{% if name=='exam_results' %}<th>Grade</th>{% endif %}{% if hs %}<th>Book Room</th>{% endif %}{% if edit and not stu %}<th>Action</th>{% endif %}</tr></thead><tbody>
+{% for r in rows %}<tr><td class="sn">{{loop.index}}</td>{% if ps and not stu %}<td>{{r['student']}}</td>{% endif %}{% for c in cols %}<td>{{r[c]}}</td>{% endfor %}
+{% if name=='exam_results' %}<td><b>{{grade(r['marks'])}}</b></td>{% endif %}
+{% if hs %}<td>{% set rl = opts.rooms.get(r['name'],[]) %}{% if rl %}<button class="bo" onclick="document.getElementById('h{{r['id']}}').showModal()">Select Room</button>
+<dialog id="h{{r['id']}}"><h3>{{r['name']}} - choose room</h3><form class="b" method="post" action="{{url_for('book')}}"><input type="hidden" name="csrf" value="{{csrf_token()}}"><input type="hidden" name="hostel" value="{{r['name']}}">
+<select name="room_no" required style="width:100%;padding:8px;margin-bottom:10px">{% for rn,fr in rl %}<option value="{{rn}}">Room {{rn}} ({{fr}} bed(s) free)</option>{% endfor %}</select>
+<button class="bs">Book Room</button> <button type="button" class="bo" onclick="this.closest('dialog').close()">Close</button></form></dialog>{% else %}Full / no rooms{% endif %}</td>{% endif %}
+{% if edit and not stu %}<td style="white-space:nowrap">{% if rev and r['status']=='Pending' %}{% for st in ['Approved','Rejected'] %}<form style="display:inline" method="post" action="{{url_for('set_status',name=name,rid=r['id'],st=st)}}"><input type="hidden" name="csrf" value="{{csrf_token()}}"><button class="bo">{{st}}</button></form> {% endfor %}{% endif %}
+<form style="display:inline" method="post" action="{{url_for('delete',name=name,rid=r['id'])}}" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf" value="{{csrf_token()}}"><button class="bo">Delete</button></form></td>{% endif %}</tr>
+{% else %}<tr class="empty"><td colspan="20">No records.</td></tr>{% endfor %}</tbody></table>{{pager()}}
+{% if name=='exam_results' %}<p><small>Grading: 0-39.99 D &middot; 40-49.99 C &middot; 50-59.99 B &middot; 60-69.99 B+ &middot; 70-100 A</small></p>{% endif %}</div></div>{% endblock %}

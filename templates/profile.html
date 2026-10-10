@@ -1,0 +1,6 @@
+{% extends 'base.html' %}{% block c %}<h2>Profile</h2><div class="card"><div class="cb">
+{% if me.photo %}<img src="{{url_for('photo',fn=me.photo)}}" style="width:120px;height:120px;border-radius:50%;object-fit:cover"><br>{% endif %}
+<p><b>{{me.full_name}}</b> ({{me.role}}) {{me.reg_no or ''}} {{me.programme or ''}}</p>
+<form method="post" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{csrf_token()}}">
+{% if me.role!='student' %}<input name="full_name" value="{{me.full_name}}"><br>{% endif %}
+<input type="file" name="photo" accept="image/*"><button>Upload / Update</button></form></div></div>{% endblock %}

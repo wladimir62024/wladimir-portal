@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% from '_dt.html' import ctl, pager %}{% block c %}
+<div class="pt">Logbook<small>Field &amp; Project / Logbook</small></div>
+<div class="card"><div class="ch"><div>Logbook <span>list</span></div><span><a class="bo" href="{{url_for('table',name='placements')}}">&larr; My Placements</a> {% if me.role=='student' %}<a class="bs" href="{{url_for('log_new')}}">+ New Entry</a>{% endif %}</span></div><div class="cb">
+{% if me.role=='student' %}<p><small>Each entry can be edited only on its own day (00:00-23:59) and until the local supervisor approves it. After that it is locked automatically.</small></p>{% endif %}
+{{ctl('entries')}}<table class="dt" data-noun="entries"><thead><tr><th>SN</th>{% if me.role!='student' %}<th>Student</th>{% endif %}<th>Date</th><th>Week</th><th>Working Activity</th><th>Supervisor Comment</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="sn">{{loop.index}}</td>{% if me.role!='student' %}<td>{{r['student']}}<br><small>{{r['full_name']}}</small></td>{% endif %}<td>{{r['log_date']}}</td><td>{{r['week']}}</td>
+<td><button class="bo" onclick="document.getElementById('v{{r['id']}}').showModal()">View</button><dialog id="v{{r['id']}}" style="min-width:min(700px,90vw)"><h3>{{r['log_date']}} - Week {{r['week']}}</h3><div class="b">{{r['activity']|safe}}<br><button class="bo" onclick="this.closest('dialog').close()">Close</button></div></dialog></td>
+<td>{{r['supervisor_comment']}}</td>
+<td>{% if r['status']=='Approved' %}<span class="ok">&#10003;</span> Approved{% elif r['status']=='Rejected' %}<span class="ok no">&times;</span> Rejected{% else %}&#8987; Pending Approval{% endif %}</td>
+<td>{% if me.role=='student' %}{% if editable(r) %}<a class="bo" href="{{url_for('log_edit',rid=r['id'])}}">Edit</a>{% else %}&#128274; Locked{% endif %}{% else %}<a class="bo" href="{{url_for('sup_page')}}">Review</a>{% endif %}</td></tr>
+{% else %}<tr class="empty"><td colspan="9">No entries.</td></tr>{% endfor %}</tbody></table>{{pager()}}</div></div>{% endblock %}

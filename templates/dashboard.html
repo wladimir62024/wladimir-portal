@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block c %}
+
+<div class="pt">Dashboard<small>Welcome</small></div><div class="cards">{% for k,v in stats.items() %}<div class="cd"><b>{{v}}</b><br>{{k}}</div>{% endfor %}</div>{% endblock %}
